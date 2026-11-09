@@ -208,10 +208,10 @@ body{
   <div class="envelope">
     <div class="env-body"></div>
     <div class="env-flap"></div>
-    <div class="env-heart">❤</div>
+    <div class="env-heart">★</div>
   </div>
   <h1 id="introTitulo">Você recebeu uma carta</h1>
-  <button id="abrir" class="btn">Abrir 💌</button>
+  <button id="abrir" class="btn">Abrir ✉️</button>
 </div>
 
 <main class="paper" id="paper">
@@ -570,7 +570,7 @@ function tirarLapis() {
 
 /* ---------- brilhinhos que seguem o dedo / mouse ---------- */
 (function brilhinhos() {
-  const simbolos = ["✦", "✧", "♥", "✶"], cores = ["#ff5c8a", "#ffc233", "#8b6bff", "#4cc3ff", "#ff8ab8"];
+  const simbolos = ["✦", "✧", "★", "✶"], cores = ["#ff5c8a", "#ffc233", "#8b6bff", "#4cc3ff", "#ff8ab8"];
   let ultimo = 0;
   addEventListener("pointermove", (e) => {
     const t = performance.now();
@@ -718,27 +718,32 @@ let temMp3 = false;
 audio.addEventListener("canplay", () => { temMp3 = true; }, { once: true });
 
 /* Música do YouTube (opcional, vazio por padrão) */
-let ytPlayer = null, ytTimer = null, ytJaTocou = false, ytTentativas = 0;
-function ligarYT() {
-  if (!MUSICA_YOUTUBE) return;
-  // abrindo o arquivo direto (file://) o YouTube recusa o player (erro 153): usa a trilha própria
-  if (location.protocol === "file:") { Trilha.ligar(); return; }
-  if (ytPlayer && ytPlayer.playVideo) { ytPlayer.playVideo(); return; }
-  if (!$("#yt")) {
-    const d = document.createElement("div");
-    d.id = "yt"; // o player precisa ter pelo menos 200x200px, por isso fica quase transparente
-    d.style.cssText = "position:fixed;left:0;bottom:0;width:220px;height:220px;opacity:.003;pointer-events:none;z-index:-1";
-    document.body.appendChild(d);
-  }
+let ytPlayer = null, ytPronto = false, ytTimer = null, ytJaTocou = false, ytTentativas = 0, ytFalhou = false;
+
+function falhaYT() { ytFalhou = true; if (somLigado && !ytJaTocou) Trilha.ligar(); } // erro real: vídeo removido, sem internet
+
+/* Carrega o player do YouTube já na tela inicial (antes do toque em "Abrir"),
+   para a música começar quase na hora em que ela abrir a carta. */
+function prepararYT() {
+  if (!MUSICA_YOUTUBE || location.protocol === "file:" || ytPlayer || $("#yt")) return;
+  const d = document.createElement("div");
+  d.id = "yt"; // o player precisa ter pelo menos 200x200px, por isso fica quase transparente
+  d.style.cssText = "position:fixed;left:0;bottom:0;width:220px;height:220px;opacity:.003;pointer-events:none;z-index:-1";
+  document.body.appendChild(d);
   const criar = () => {
     ytPlayer = new YT.Player("yt", {
       width: 220, height: 220, videoId: MUSICA_YOUTUBE,
-      playerVars: { autoplay: 1, loop: 1, playlist: MUSICA_YOUTUBE, controls: 0, playsinline: 1, origin: location.origin },
+      playerVars: { autoplay: 0, loop: 1, playlist: MUSICA_YOUTUBE, controls: 0, playsinline: 1, origin: location.origin },
       events: {
-        onReady: (e) => { e.target.setVolume(70); e.target.playVideo(); },
-        onError: () => { if (somLigado && !ytJaTocou) Trilha.ligar(); }, // vídeo removido/bloqueado
+        onReady: (e) => {
+          ytPronto = true; e.target.setVolume(70);
+          if (somLigado) { e.target.unMute(); e.target.playVideo(); }
+          else { e.target.mute(); e.target.playVideo(); }          // aquecimento: carrega o vídeo sem som
+        },
+        onError: falhaYT,
         onStateChange: (e) => {
-          if (e.data === 1) { ytJaTocou = true; ytTentativas = 0; Trilha.desligar(); } // tocando: dispensa a reserva
+          if (e.data === 1 && !somLigado) { e.target.pauseVideo(); e.target.seekTo(0, true); } // aquecimento pronto: pausa e espera o toque
+          else if (e.data === 1) { ytJaTocou = true; ytTentativas = 0; e.target.unMute(); Trilha.desligar(); } // tocando: dispensa a reserva
           // pausou/terminou sozinho enquanto o som deve estar ligado: retoma (no máx. 3 vezes seguidas)
           else if ((e.data === 2 || e.data === 0) && somLigado && ytTentativas < 3) {
             ytTentativas++; setTimeout(() => { if (somLigado) e.target.playVideo(); }, 400);
@@ -751,24 +756,38 @@ function ligarYT() {
   else {
     window.onYouTubeIframeAPIReady = criar;
     const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api";
-    s.onerror = () => { if (somLigado) Trilha.ligar(); };            // sem internet
+    s.onerror = falhaYT;
     document.head.appendChild(s);
   }
-  // Reserva: só entra se o YouTube NUNCA chegar a tocar (autoplay bloqueado, sem internet etc.).
-  // Carregando (buffering) não conta como falha; a checagem é a cada 4s, até 12s.
+}
+
+function ligarYT() {
+  if (!MUSICA_YOUTUBE) return;
+  // abrindo o arquivo direto (file://) o YouTube recusa o player (erro 153): usa a trilha própria
+  if (location.protocol === "file:") { Trilha.ligar(); return; }
+  prepararYT();                                   // não faz nada se já foi preparado
+  if (ytPronto && ytPlayer.playVideo) {
+    ytPlayer.unMute(); ytPlayer.setVolume(70); ytPlayer.seekTo(0, true); ytPlayer.playVideo(); // já está carregado: começa na hora
+  }
+  // Reserva: NUNCA entra só porque o vídeo está carregando (buffering). Só se o YouTube
+  // realmente não conseguir tocar (travado, bloqueado ou sem internet por muito tempo).
   clearTimeout(ytTimer);
   let checagens = 0;
   const checar = () => {
-    if (!somLigado || ytJaTocou) return;
-    const st = ytPlayer && ytPlayer.getPlayerState ? ytPlayer.getPlayerState() : -2;
-    if (st === 3 && ++checagens < 3) { ytTimer = setTimeout(checar, 4000); return; } // ainda carregando
-    if (st !== 1) Trilha.ligar();
+    if (!somLigado || ytJaTocou || ytFalhou) return;
+    checagens++;
+    const st = ytPronto ? ytPlayer.getPlayerState() : -2;
+    if (st === 1) return;
+    if (st === 3 && checagens < 12) { ytTimer = setTimeout(checar, 5000); return; }  // carregando: espera (até ~1 min)
+    if (ytPronto && checagens < 3) { ytPlayer.playVideo(); ytTimer = setTimeout(checar, 4000); return; } // tenta de novo
+    if (!ytPronto && checagens < 5) { ytTimer = setTimeout(checar, 4000); return; }  // API ainda carregando
+    Trilha.ligar();
   };
-  ytTimer = setTimeout(checar, 8000);
+  ytTimer = setTimeout(checar, 6000);
 }
 function desligarYT() {
   clearTimeout(ytTimer);
-  if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+  if (ytPronto && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
 }
 
 let somLigado = false;
@@ -784,6 +803,8 @@ function desligarSom() {
 }
 btnSom.hidden = false;
 btnSom.onclick = () => (somLigado ? desligarSom() : ligarSom());
+
+prepararYT();   // já deixa o YouTube carregando enquanto ela vê o envelope
 
 /* ---------- eventos ---------- */
 $("#abrir").onclick = async () => {
