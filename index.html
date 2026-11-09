@@ -216,7 +216,7 @@ body{
 
 <main class="paper" id="paper">
   <div id="text"></div>
-  <!-- Bolo: ela apaga as velas soprando no microfone (ou com um toque) -->
+  <!-- Bolo: ela apaga as velas com um toque -->
   <div id="bolo" class="bolo">
     <svg viewBox="0 0 220 190" aria-hidden="true">
       <ellipse cx="110" cy="174" rx="102" ry="12" fill="#e6d3e0"/>
@@ -241,10 +241,9 @@ body{
       <!-- fumaça depois de apagar -->
       <g class="fumaca" fill="#aaa"><circle cx="88" cy="30" r="4"/><circle cx="110" cy="30" r="4"/><circle cx="132" cy="30" r="4"/></g>
     </svg>
-    <p class="dica" id="dicaBolo">Faça um pedido e sopre as velinhas 🎤</p>
+    <p class="dica" id="dicaBolo">Faça um pedido e apague as velinhas 🎂</p>
     <div class="acoes">
-      <button id="btnSoprar" class="btn pequeno">🎤 Soprar</button>
-      <button id="btnApagar" class="btn pequeno alt">Apagar com um toque</button>
+      <button id="btnApagar" class="btn pequeno">Apagar as velas 💨</button>
     </div>
   </div>
 
@@ -508,56 +507,25 @@ function fogos(dur = 6000) {
   })(t0);
 }
 
-/* ---------- bolo: apagar as velas soprando no microfone (ou com um toque) ---------- */
+/* ---------- bolo: ela apaga as velas com um toque ---------- */
 async function bolo(id) {
   const el = $("#bolo");
   el.classList.add("on");
   const r = el.getBoundingClientRect();
   scrollTo({ top: r.bottom + scrollY - innerHeight + 90, behavior: "smooth" });
-  if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(18);   // abaixa a música para o microfone ouvir o sopro
   await sleep(900);
 
-  let stream, ac, iv;
-  const parar = () => {
-    clearInterval(iv);
-    try { stream && stream.getTracks().forEach((t) => t.stop()); ac && ac.close(); } catch (e) {}
-  };
   await new Promise((resolve) => {
     let feito = false;
     const vigia = setInterval(() => { if (id !== runId) fim(); }, 300); // se reiniciar, cancela
-    const fim = () => { if (feito) return; feito = true; parar(); clearInterval(vigia); resolve(); };
+    const fim = () => { if (feito) return; feito = true; clearInterval(vigia); resolve(); };
     $("#btnApagar").onclick = fim;
-    $("#btnSoprar").onclick = async () => {
-      $("#btnSoprar").disabled = true;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: false },
-        });
-        ac = new (window.AudioContext || window.webkitAudioContext)();
-        const an = ac.createAnalyser(); an.fftSize = 512;
-        ac.createMediaStreamSource(stream).connect(an);
-        const d = new Float32Array(an.fftSize);
-        let forca = 0;
-        $("#dicaBolo").textContent = "Pode soprar! 💨";
-        iv = setInterval(() => {
-          an.getFloatTimeDomainData(d);
-          const rms = Math.sqrt(d.reduce((s, v) => s + v * v, 0) / d.length);
-          el.style.setProperty("--s", Math.min(1, rms * 4).toFixed(2));   // chamas inclinam com o sopro
-          forca = rms > 0.12 ? forca + 1 : Math.max(0, forca - 1);
-          if (forca >= 6) fim();                                          // ~0,3s de sopro forte
-        }, 50);
-      } catch (e) {
-        $("#btnSoprar").disabled = false;
-        $("#dicaBolo").textContent = "Não consegui usar o microfone 😅 toque em “Apagar com um toque”";
-      }
-    };
   });
   if (id !== runId) return false;
 
   el.style.setProperty("--s", 0);
   el.classList.add("apagado");
   $("#dicaBolo").textContent = "Pedido feito! 🎉✨";
-  if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(70);
   fogos(); confete();
   await sleep(4200);
   return id === runId;
@@ -595,8 +563,7 @@ async function start() {
   $("#qrwrap").classList.remove("on", "fim");
   $("#bolo").classList.remove("on", "apagado");
   $("#bolo").style.setProperty("--s", 0);
-  $("#dicaBolo").textContent = "Faça um pedido e sopre as velinhas 🎤";
-  $("#btnSoprar").disabled = false;
+  $("#dicaBolo").textContent = "Faça um pedido e apague as velinhas 🎂";
   const chars = build();
   const p0 = $("#paper").getBoundingClientRect();
   movePencil(p0.left + scrollX + 90, p0.top + scrollY + 70, 0);
