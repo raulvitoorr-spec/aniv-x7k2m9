@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feliz Aniversário! 🎂</title>
+<meta name="theme-color" content="#f7b6c8">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  min-height:100vh;overflow-x:hidden;
+  font-family:'Caveat','Segoe Script','Bradley Hand',cursive;
+  background:
+    radial-gradient(circle at 20% 15%,#ffd6e3 0,transparent 45%),
+    radial-gradient(circle at 85% 80%,#d9d2ff 0,transparent 50%),
+    linear-gradient(160deg,#fbe3d6,#f7b6c8);
+  background-attachment:fixed;
+  display:flex;justify-content:center;padding:110px 0 140px;
+}
+
+/* ---------- botão ---------- */
+.btn{
+  font:700 26px 'Caveat',cursive;color:#fff;text-decoration:none;cursor:pointer;
+  border:0;border-radius:40px;padding:10px 30px;
+  background:linear-gradient(135deg,#ff7aa2,#ff9a6b);
+  box-shadow:0 6px 18px rgba(255,100,130,.45);
+  transition:transform .15s,box-shadow .15s;display:inline-block;
+}
+.btn:hover{transform:translateY(-2px) scale(1.04)}
+.btn:active{transform:scale(.97)}
+
+/* ---------- balões de fundo ---------- */
+#balloons{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.balloon{
+  position:absolute;bottom:-160px;width:56px;height:70px;border-radius:50% 50% 48% 48%;
+  opacity:.75;animation:rise linear infinite;
+}
+.balloon::after{ /* fio */
+  content:"";position:absolute;left:50%;top:100%;width:1px;height:60px;background:rgba(0,0,0,.25)
+}
+.balloon::before{ /* brilho */
+  content:"";position:absolute;left:14px;top:12px;width:12px;height:18px;border-radius:50%;
+  background:rgba(255,255,255,.55);transform:rotate(25deg)
+}
+@keyframes rise{
+  from{transform:translateY(0) translateX(0)}
+  50%{transform:translateY(-60vh) translateX(25px)}
+  to{transform:translateY(-130vh) translateX(-10px)}
+}
+
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+
+/* ---------- tela inicial ---------- */
+#intro{
+  position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:22px;text-align:center;padding:20px;
+  background:linear-gradient(160deg,#fbe3d6,#f7b6c8);
+  transition:opacity .7s,visibility .7s;
+}
+#intro.sumiu{opacity:0;visibility:hidden}
+#intro h1{margin:0;font-size:clamp(38px,9vw,60px);color:#8a2a4b;font-weight:700}
+.envelope{position:relative;width:200px;height:132px;animation:float 2.6s ease-in-out infinite}
+.env-body{position:absolute;inset:0;background:#fff4ea;border-radius:8px;box-shadow:0 12px 30px rgba(120,30,60,.3)}
+.env-body::before{ /* dobras laterais */
+  content:"";position:absolute;inset:0;border-radius:8px;
+  background:linear-gradient(to bottom right,transparent 49.5%,#f0d9c8 50%) left/50% 100% no-repeat,
+             linear-gradient(to bottom left,transparent 49.5%,#f0d9c8 50%) right/50% 100% no-repeat;
+}
+.env-flap{
+  position:absolute;left:0;top:0;width:100%;height:70px;background:#ffe4d3;
+  clip-path:polygon(0 0,100% 0,50% 100%);filter:drop-shadow(0 3px 2px rgba(0,0,0,.15));
+}
+.env-heart{position:absolute;left:50%;top:50px;transform:translateX(-50%);font-size:34px;color:#e63e6d;
+  animation:beat 1.2s infinite}
+@keyframes float{50%{transform:translateY(-10px) rotate(-1.5deg)}}
+@keyframes beat{50%{transform:translateX(-50%) scale(1.25)}}
+
+/* ---------- folha ---------- */
+.paper{
+  position:relative;z-index:1;width:min(660px,92vw);height:fit-content;
+  opacity:0;transform:translateY(40px) scale(.96);
+  transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1);
+  padding:54px 34px 40px 66px;border-radius:6px;
+  background:
+    linear-gradient(90deg,transparent 54px,#e07a7a 54px,#e07a7a 56px,transparent 56px),
+    repeating-linear-gradient(#fffdf6 0,#fffdf6 43px,#bcd5ea 43px,#bcd5ea 44px);
+  box-shadow:0 2px 0 #fff inset,0 18px 40px rgba(120,30,60,.25),0 2px 6px rgba(0,0,0,.15);
+}
+.paper.entrou{opacity:1;transform:none}
+.paper::before{ /* furos do caderno */
+  content:"";position:absolute;left:14px;top:30px;bottom:30px;width:14px;
+  background:radial-gradient(circle,#e9c9d3 0 6px,transparent 7px) 0 0/14px 90px repeat-y;
+}
+#text{color:#1b2f6b;font-size:clamp(26px,5.4vw,36px);line-height:44px;font-weight:700}
+.line{min-height:44px}
+.word{display:inline-block;white-space:nowrap}
+/* margens negativas à esquerda/topo/base evitam cortar o "rabisco" das letras */
+.ch{display:inline-block;white-space:pre;clip-path:inset(-50% 100% -50% -50%)}
+.titulo{font-size:1.45em;font-weight:700;color:#c2305e}
+.sub{color:#8a5bb5;font-size:.95em}
+
+/* ---------- gato e pinscher ---------- */
+.pet{position:absolute;width:104px;height:auto;z-index:3;pointer-events:none;
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.2));animation:bob 3.4s ease-in-out infinite}
+.cat{right:24px;top:-80px}
+.dog{left:76px;top:-80px;animation-delay:-1.7s}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+.dog .eye{animation-delay:-2s}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+
+/* ---------- pulseira da amizade ---------- */
+.bracelet{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;
+  margin-top:26px;opacity:0;transition:opacity 1s .6s}
+#qrwrap.fim .bracelet{opacity:1}
+.bracelet::before{content:"";position:absolute;left:3%;right:3%;top:50%;height:2px;
+  background:#c9a7c9;z-index:0}
+.bead{position:relative;z-index:1;width:34px;height:34px;border-radius:50%;display:grid;
+  place-items:center;font:700 17px system-ui,sans-serif;color:#5a3a6e;
+  box-shadow:inset -3px -4px 6px rgba(0,0,0,.12),inset 3px 3px 6px rgba(255,255,255,.7),0 2px 4px rgba(0,0,0,.15)}
+
+/* ---------- emojis flutuando ---------- */
+.floaty{position:absolute;bottom:-60px;opacity:.85;animation:rise linear infinite;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+
+/* ---------- QR ---------- */
+#qrwrap{margin-top:30px;text-align:center;opacity:0;visibility:hidden;transition:opacity .5s}
+#qrwrap.on{opacity:1;visibility:visible}
+#qr{background:#fff;border:3px solid #1f3a7a;border-radius:10px;max-width:100%;
+  box-shadow:0 6px 16px rgba(31,58,122,.25)}
+.qrlabel{margin:10px 0 14px;color:#1f3a7a;font-size:30px;font-weight:700;opacity:0;transition:opacity .8s}
+#btnPresente{opacity:0;transform:translateY(8px);transition:opacity .8s,transform .8s}
+#qrwrap.fim .qrlabel,#qrwrap.fim #btnPresente{opacity:1;transform:none}
+
+/* ---------- lápis ---------- */
+#pencil{
+  position:absolute;left:0;top:0;width:140px;height:140px;z-index:30;pointer-events:none;
+  transition-property:transform;transition-timing-function:linear;will-change:transform;
+  filter:drop-shadow(3px 6px 4px rgba(0,0,0,.25));
+}
+#pencil svg{overflow:visible;scale:.72;transform-origin:10px 130px;animation:wob .18s infinite alternate ease-in-out}
+@keyframes wob{from{transform:translate(0,0) rotate(-1deg)}to{transform:translate(1.5px,-2px) rotate(1deg)}}
+
+/* ---------- bolo ---------- */
+.bolo{display:none;margin-top:26px;text-align:center}
+.bolo.on{display:block;animation:surge .8s cubic-bezier(.2,.8,.2,1) both}
+@keyframes surge{from{opacity:0;transform:translateY(26px) scale(.9)}to{opacity:1;transform:none}}
+.bolo svg{width:min(250px,68vw);height:auto;overflow:visible;filter:drop-shadow(0 8px 6px rgba(0,0,0,.2))}
+.dica{margin:6px 0 12px;font-size:30px;font-weight:700;color:#8a2a4b}
+.acoes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.btn.pequeno{font-size:23px;padding:8px 22px}
+.btn.alt{background:linear-gradient(135deg,#9d8cff,#7fb7ff);box-shadow:0 6px 18px rgba(120,130,255,.4)}
+.btn:disabled{opacity:.6;cursor:default}
+.sway,.chama{transform-box:fill-box;transform-origin:50% 100%}
+.sway{transform:rotate(calc(var(--s,0) * -38deg)) scaleY(calc(1 - var(--s,0) * .35));transition:transform .08s linear}
+.chama{animation:flicker .22s infinite alternate ease-in-out;filter:drop-shadow(0 0 5px rgba(255,170,0,.9))}
+@keyframes flicker{from{transform:scale(1,1) rotate(-3deg)}to{transform:scale(.92,1.1) rotate(3deg)}}
+.bolo.apagado .sway{transform:scale(0)!important;transition:transform .35s ease-in}
+.bolo.apagado .acoes{display:none}
+.fumaca{opacity:0}
+.bolo.apagado .fumaca{animation:fumaca 2.2s ease-out}
+.fumaca circle:nth-child(2){animation-delay:.15s}
+.fumaca circle:nth-child(3){animation-delay:.3s}
+@keyframes fumaca{0%{opacity:.7;transform:translateY(0) scale(.6)}100%{opacity:0;transform:translateY(-40px) scale(2.4)}}
+.fumaca circle{transform-box:fill-box;transform-origin:center}
+
+/* ---------- fogos e brilhinhos ---------- */
+#fogos{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:49}
+.spark{position:fixed;z-index:70;pointer-events:none;transform:translate(-50%,-50%);
+  animation:spark .9s ease-out forwards;text-shadow:0 0 6px currentColor}
+@keyframes spark{to{opacity:0;transform:translate(calc(-50% + var(--dx,0px)),calc(-50% + 34px)) scale(.3) rotate(140deg)}}
+
+/* ---------- controles ---------- */
+#controles{position:fixed;right:14px;bottom:14px;z-index:60;display:flex;gap:8px}
+#controles button{
+  width:44px;height:44px;border:0;border-radius:50%;font-size:20px;cursor:pointer;
+  background:rgba(255,255,255,.85);box-shadow:0 3px 10px rgba(0,0,0,.2);color:#8a2a4b
+}
+
+@media (max-width:480px){
+  .pet{width:84px;top:-64px}
+  .dog{left:50px}
+  .cat{right:14px}
+  .bead{width:30px;height:30px;font-size:15px}
+  .paper{padding:40px 18px 32px 52px}
+  .paper::before{left:10px}
+  .paper{background:
+    linear-gradient(90deg,transparent 40px,#e07a7a 40px,#e07a7a 42px,transparent 42px),
+    repeating-linear-gradient(#fffdf6 0,#fffdf6 43px,#bcd5ea 43px,#bcd5ea 44px)}
+}
+@media (prefers-reduced-motion:reduce){.balloon,.envelope,.env-heart{animation:none}}
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+</head>
+<body>
+
+<div id="balloons" aria-hidden="true"></div>
+<canvas id="fogos" aria-hidden="true"></canvas>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<!-- Tela inicial: o toque também libera o som no celular -->
+<div id="intro">
+  <div class="envelope">
+    <div class="env-body"></div>
+    <div class="env-flap"></div>
+    <div class="env-heart">❤</div>
+  </div>
+  <h1 id="introTitulo">Você recebeu uma carta</h1>
+  <button id="abrir" class="btn">Abrir 💌</button>
+</div>
+
+<main class="paper" id="paper">
+  <div id="text"></div>
+  <!-- Bolo: ela apaga as velas soprando no microfone (ou com um toque) -->
+  <div id="bolo" class="bolo">
+    <svg viewBox="0 0 220 190" aria-hidden="true">
+      <ellipse cx="110" cy="174" rx="102" ry="12" fill="#e6d3e0"/>
+      <rect x="28" y="108" width="164" height="62" rx="12" fill="#ffb7cb"/>
+      <rect x="28" y="108" width="164" height="12" rx="6" fill="#fff"/>
+      <g fill="#fff"><ellipse cx="48" cy="123" rx="8" ry="10"/><ellipse cx="78" cy="125" rx="8" ry="11"/><ellipse cx="108" cy="123" rx="8" ry="9"/><ellipse cx="138" cy="125" rx="8" ry="11"/><ellipse cx="168" cy="123" rx="8" ry="10"/></g>
+      <g><rect x="44" y="140" width="7" height="3" rx="1.5" fill="#ffd86b" transform="rotate(20 44 140)"/><rect x="72" y="150" width="7" height="3" rx="1.5" fill="#8ec5ff" transform="rotate(-25 72 150)"/><rect x="102" y="142" width="7" height="3" rx="1.5" fill="#fff" transform="rotate(35 102 142)"/><rect x="132" y="152" width="7" height="3" rx="1.5" fill="#b79cff" transform="rotate(-10 132 152)"/><rect x="160" y="143" width="7" height="3" rx="1.5" fill="#ffd86b" transform="rotate(30 160 143)"/><rect x="58" y="157" width="7" height="3" rx="1.5" fill="#7fe0b5" transform="rotate(-30 58 157)"/><rect x="150" y="160" width="7" height="3" rx="1.5" fill="#8ec5ff" transform="rotate(15 150 160)"/></g>
+      <rect x="56" y="68" width="108" height="44" rx="10" fill="#c9b6ff"/>
+      <rect x="56" y="68" width="108" height="10" rx="5" fill="#fff"/>
+      <g fill="#fff"><ellipse cx="76" cy="81" rx="7" ry="9"/><ellipse cx="110" cy="82" rx="7" ry="10"/><ellipse cx="144" cy="81" rx="7" ry="9"/></g>
+      <!-- velas -->
+      <g>
+        <rect x="84" y="38" width="8" height="30" rx="2" fill="#ffd86b"/><rect x="84" y="46" width="8" height="4" fill="#fff" opacity=".7"/><rect x="84" y="56" width="8" height="4" fill="#fff" opacity=".7"/>
+        <rect x="106" y="38" width="8" height="30" rx="2" fill="#8ec5ff"/><rect x="106" y="46" width="8" height="4" fill="#fff" opacity=".7"/><rect x="106" y="56" width="8" height="4" fill="#fff" opacity=".7"/>
+        <rect x="128" y="38" width="8" height="30" rx="2" fill="#ff7aa2"/><rect x="128" y="46" width="8" height="4" fill="#fff" opacity=".7"/><rect x="128" y="56" width="8" height="4" fill="#fff" opacity=".7"/>
+        <path d="M88 38v-4M110 38v-4M132 38v-4" stroke="#444" stroke-width="1.5"/>
+      </g>
+      <!-- chamas (balançam com o sopro) -->
+      <g transform="translate(88,34)"><g class="sway"><g class="chama"><path d="M0 -22C-9 -10 -8 -2 0 0C8 -2 9 -10 0 -22Z" fill="#ffb300"/><path d="M0 -14C-4 -8 -4 -3 0 -2C4 -3 4 -8 0 -14Z" fill="#fff2a8"/></g></g></g>
+      <g transform="translate(110,34)"><g class="sway"><g class="chama" style="animation-delay:-.1s"><path d="M0 -22C-9 -10 -8 -2 0 0C8 -2 9 -10 0 -22Z" fill="#ffb300"/><path d="M0 -14C-4 -8 -4 -3 0 -2C4 -3 4 -8 0 -14Z" fill="#fff2a8"/></g></g></g>
+      <g transform="translate(132,34)"><g class="sway"><g class="chama" style="animation-delay:-.2s"><path d="M0 -22C-9 -10 -8 -2 0 0C8 -2 9 -10 0 -22Z" fill="#ffb300"/><path d="M0 -14C-4 -8 -4 -3 0 -2C4 -3 4 -8 0 -14Z" fill="#fff2a8"/></g></g></g>
+      <!-- fumaça depois de apagar -->
+      <g class="fumaca" fill="#aaa"><circle cx="88" cy="30" r="4"/><circle cx="110" cy="30" r="4"/><circle cx="132" cy="30" r="4"/></g>
+    </svg>
+    <p class="dica" id="dicaBolo">Faça um pedido e sopre as velinhas 🎤</p>
+    <div class="acoes">
+      <button id="btnSoprar" class="btn pequeno">🎤 Soprar</button>
+      <button id="btnApagar" class="btn pequeno alt">Apagar com um toque</button>
+    </div>
+  </div>
+
+  <div id="qrwrap">
+    <canvas id="qr"></canvas>
+    <p class="qrlabel">Escaneie para ver seu presente 🎁</p>
+    <a id="btnPresente" class="btn" target="_blank" rel="noopener">Abrir meu presente 🎁</a>
+    <div class="bracelet" id="bracelet" aria-hidden="true"></div>
+  </div>
+
+  <!-- Gato laranja espiando por cima da folha -->
+  <svg class="pet cat" viewBox="0 0 120 112" aria-hidden="true">
+    <polygon points="20,44 28,6 58,28" fill="#f2913a"/><polygon points="29,36 32,16 47,28" fill="#ffb3a7"/>
+    <polygon points="100,44 92,6 62,28" fill="#f2913a"/><polygon points="91,36 88,16 73,28" fill="#ffb3a7"/>
+    <ellipse cx="60" cy="58" rx="43" ry="36" fill="#f2913a"/>
+    <path d="M60 24v13M49 26l3 11M71 26l-3 11M20 52l10 3M20 62l10-1M100 52l-10 3M100 62l-10-1" stroke="#d1691a" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <ellipse cx="60" cy="74" rx="21" ry="14" fill="#ffe3c4"/>
+    <g class="eye"><ellipse cx="43" cy="56" rx="6" ry="7.5" fill="#2a2a2a"/><circle cx="45" cy="53" r="2.4" fill="#fff"/></g>
+    <g class="eye"><ellipse cx="77" cy="56" rx="6" ry="7.5" fill="#2a2a2a"/><circle cx="79" cy="53" r="2.4" fill="#fff"/></g>
+    <polygon points="54,66 66,66 60,73" fill="#ff7f9d"/>
+    <path d="M60 73q-5 8-12 3M60 73q5 8 12 3" stroke="#7a3b12" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M36 72l-24-4M36 77l-24 5M84 72l24-4M84 77l24 5" stroke="#fff" stroke-opacity=".9" stroke-width="1.4" stroke-linecap="round"/>
+    <ellipse cx="36" cy="102" rx="15" ry="9" fill="#f2913a" stroke="#d1691a" stroke-width="2"/>
+    <ellipse cx="84" cy="102" rx="15" ry="9" fill="#f2913a" stroke="#d1691a" stroke-width="2"/>
+    <path d="M31 99v6M37 98v7M43 99v6M79 99v6M85 98v7M91 99v6" stroke="#d1691a" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+
+  <!-- Pinscher espiando por cima da folha -->
+  <svg class="pet dog" viewBox="0 0 120 112" aria-hidden="true">
+    <polygon points="28,52 34,2 60,34" fill="#1e1e24"/><polygon points="35,44 37,16 50,34" fill="#e7a5a5"/>
+    <polygon points="92,52 86,2 60,34" fill="#1e1e24"/><polygon points="85,44 83,16 70,34" fill="#e7a5a5"/>
+    <ellipse cx="60" cy="62" rx="35" ry="34" fill="#1e1e24"/>
+    <circle cx="44" cy="45" r="4.2" fill="#cf7a30"/><circle cx="76" cy="45" r="4.2" fill="#cf7a30"/>
+    <g class="eye"><circle cx="45" cy="57" r="6.5" fill="#fff"/><circle cx="46" cy="58" r="4" fill="#2b1708"/><circle cx="47.3" cy="56.4" r="1.5" fill="#fff"/></g>
+    <g class="eye"><circle cx="75" cy="57" r="6.5" fill="#fff"/><circle cx="74" cy="58" r="4" fill="#2b1708"/><circle cx="75.3" cy="56.4" r="1.5" fill="#fff"/></g>
+    <ellipse cx="60" cy="80" rx="21" ry="16" fill="#cf7a30"/>
+    <ellipse cx="60" cy="70" rx="9" ry="6" fill="#111"/><ellipse cx="57" cy="68.4" rx="2.6" ry="1.4" fill="#fff" fill-opacity=".6"/>
+    <path d="M60 76v7M60 83q-7 6-13 1M60 83q7 6 13 1" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M54 86q6 12 12 0z" fill="#ff7f95"/>
+    <ellipse cx="38" cy="102" rx="15" ry="9" fill="#1e1e24" stroke="#cf7a30" stroke-width="2"/>
+    <ellipse cx="82" cy="102" rx="15" ry="9" fill="#1e1e24" stroke="#cf7a30" stroke-width="2"/>
+    <path d="M33 99v6M39 98v7M45 99v6M77 99v6M83 98v7M89 99v6" stroke="#cf7a30" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+</main>
+
+<div id="pencil" aria-hidden="true">
+  <svg width="140" height="140" viewBox="0 0 140 140">
+    <g transform="translate(10,130) rotate(-50)">
+      <rect x="22" y="-8" width="150" height="16" fill="#f4c542"/>
+      <rect x="22" y="-8" width="150" height="5" fill="#ffe27a"/>
+      <rect x="22" y="3" width="150" height="5" fill="#d9a82a"/>
+      <polygon points="0,0 22,-8 22,8" fill="#ecd0a8"/>
+      <polygon points="0,0 7,-2.6 7,2.6" fill="#2b2b2b"/>
+      <rect x="172" y="-8" width="10" height="16" fill="#b8bcc4"/>
+      <rect x="182" y="-8" width="14" height="16" rx="4" fill="#ee8fa3"/>
+    </g>
+  </svg>
+</div>
+
+<audio id="musica" src="musica.mp3" loop preload="auto"></audio>
+<div id="controles">
+  <button id="btnSom" title="Som" hidden>🔊</button>
+  <button id="replay" title="Ver de novo">↻</button>
+</div>
+
+<script>
+/* =================== EDITE AQUI =================== */
+const NOME = "Maria";                                   // aparece na tela inicial
+const MENSAGEM = [
+  { t: "Feliz aniversário, Maria! 🎂", titulo: true },
+  { t: "(Taylor's Version) ✨", sub: true },
+  { t: "Hoje o dia é todo seu: pode dançar" },
+  { t: "Shake It Off, cantar Love Story" },
+  { t: "e ter o pinscher e o gato laranja" },
+  { t: "de plateia. 🐶🐱" },
+  { t: "Você merece uma era linda de vida." },
+  { t: "Preparei uma surpresinha pra você..." },
+];
+// Instrumental de "Shake It Off" no YouTube (upload de terceiro). Reserva: "2HYwj3zB6ho". Vazio ("") = trilha instrumental própria
+const MUSICA_YOUTUBE = "TanVtB8i_dY";
+const PULSEIRA =["F", "E", "L", "I", "Z", "♥", "1", "3"];   // letras das miçangas (deixe [] para esconder)
+const LINK = "https://exemplo.com/seu-presente";        // para onde o QR Code / botão levam
+const VELOCIDADE = 1;                                   // 0.7 = mais rápido, 1.5 = mais lento
+/* ================================================== */
+
+const $ = (s) => document.querySelector(s);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const pencil = $("#pencil");
+let runId = 0;
+
+$("#introTitulo").textContent = NOME ? `${NOME}, você recebeu uma carta` : "Você recebeu uma carta";
+$("#btnPresente").href = LINK;
+
+/* ---------- balões de fundo ---------- */
+(function balloons() {
+  const cores = ["#ff7aa2", "#ffb86b", "#8ec5ff", "#b79cff", "#7fe0b5", "#ffd86b"];
+  const box = $("#balloons");
+  for (let i = 0; i < 12; i++) {
+    const b = document.createElement("div");
+    b.className = "balloon";
+    b.style.left = Math.random() * 95 + "%";
+    b.style.background = cores[i % cores.length];
+    b.style.animationDuration = 14 + Math.random() * 14 + "s";
+    b.style.animationDelay = -Math.random() * 20 + "s";
+    b.style.transform = `scale(${0.7 + Math.random() * 0.8})`;
+    box.appendChild(b);
+  }
+  // emojis temáticos subindo devagar
+  const emojis = ["🎸", "🐾", "✨", "💛", "🧣", "🐱", "🐶", "⭐", "🎤", "🦴"];
+  for (let i = 0; i < 12; i++) {
+    const e = document.createElement("div");
+    e.className = "floaty";
+    e.textContent = emojis[i % emojis.length];
+    e.style.left = Math.random() * 94 + "%";
+    e.style.fontSize = 22 + Math.random() * 18 + "px";
+    e.style.animationDuration = 18 + Math.random() * 16 + "s";
+    e.style.animationDelay = -Math.random() * 25 + "s";
+    box.appendChild(e);
+  }
+})();
+
+/* ---------- pulseira da amizade ---------- */
+(function pulseira() {
+  const box = $("#bracelet");
+  const cores = ["#ffd1e8", "#c9e4ff", "#fff1a8", "#e0d1ff", "#c9f5dc"];
+  PULSEIRA.forEach((l, i) => {
+    const b = document.createElement("span");
+    b.className = "bead"; b.textContent = l;
+    b.style.background = cores[i % cores.length];
+    box.appendChild(b);
+  });
+})();
+
+/* ---------- confete ---------- */
+function confete() {
+  const cv = $("#confetti"), ctx = cv.getContext("2d");
+  const dpr = devicePixelRatio || 1;
+  cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+  const cores = ["#ff5c8a", "#ffc233", "#4cc3ff", "#8b6bff", "#4ce0a0", "#ff8a4c"];
+  const ps = Array.from({ length: 170 }, () => ({
+    x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * 0.6,
+    w: 6 + Math.random() * 8, h: 4 + Math.random() * 6,
+    vx: -1.5 + Math.random() * 3, vy: 2 + Math.random() * 3.5,
+    r: Math.random() * 6, vr: -0.2 + Math.random() * 0.4,
+    c: cores[(Math.random() * cores.length) | 0],
+  }));
+  const t0 = performance.now();
+  (function frame(t) {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    let vivos = 0;
+    for (const p of ps) {
+      p.x += p.vx + Math.sin(p.y / 40); p.y += p.vy; p.r += p.vr;
+      if (p.y < innerHeight + 20) vivos++;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+    }
+    if (vivos && t - t0 < 9000) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, innerWidth, innerHeight);
+  })(t0);
+}
+
+/* ---------- lápis ---------- */
+function movePencil(x, y, dur) {
+  pencil.style.transitionDuration = dur + "ms";
+  pencil.style.transform = `translate(${x - 10}px,${y - 130}px)`;
+}
+function follow(y) {
+  if (y - scrollY > innerHeight - 150)
+    scrollTo({ top: y - innerHeight + 230, behavior: "smooth" });
+}
+
+/* ---------- monta o texto ---------- */
+function build() {
+  const box = $("#text");
+  box.innerHTML = "";
+  const chars = [];
+  MENSAGEM.forEach((l) => {
+    const line = document.createElement("div");
+    line.className = "line" + (l.titulo ? " titulo" : "") + (l.sub ? " sub" : "");
+    const words = l.t.split(" ");
+    words.forEach((w, i) => {
+      const word = document.createElement("span");
+      word.className = "word";
+      [...(w + (i < words.length - 1 ? " " : ""))].forEach((c) => {
+        const s = document.createElement("span");
+        s.className = "ch"; s.textContent = c;
+        word.appendChild(s); chars.push(s);
+      });
+      line.appendChild(word);
+    });
+    box.appendChild(line);
+  });
+  return chars;
+}
+
+/* ---------- QR Code desenhado pelo lápis ---------- */
+async function desenharQR(id) {
+  const wrap = $("#qrwrap"), cv = $("#qr"), ctx = cv.getContext("2d");
+  wrap.classList.add("on");
+  if (typeof qrcode === "undefined") { cv.style.display = "none"; wrap.classList.add("fim"); return; }
+
+  const qr = qrcode(0, "M");
+  qr.addData(LINK); qr.make();
+  const n = qr.getModuleCount(), quiet = 2, total = n + quiet * 2;
+  const size = Math.min(260, $("#paper").clientWidth - 90);
+  const cell = Math.max(3, Math.floor(size / total)), px = cell * total, dpr = devicePixelRatio || 1;
+  cv.style.display = "";
+  cv.width = px * dpr; cv.height = px * dpr;
+  cv.style.width = cv.style.height = px + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, px, px);
+
+  await sleep(350);
+  follow(cv.getBoundingClientRect().bottom + scrollY);
+  await sleep(400);
+  const r = cv.getBoundingClientRect(), ox = r.left + scrollX, oy = r.top + scrollY;
+  ctx.fillStyle = "#1f3a7a";
+  for (let row = 0; row < n; row++) {
+    if (id !== runId) return;
+    const y = oy + (row + quiet + 1) * cell;
+    movePencil(ox + quiet * cell, y, 0); await sleep(25);
+    movePencil(ox + (n + quiet) * cell, y, 65 * VELOCIDADE);
+    for (let col = 0; col < n; col++)
+      if (qr.isDark(row, col)) ctx.fillRect((col + quiet) * cell, (row + quiet) * cell, cell, cell);
+    await sleep(70 * VELOCIDADE);
+  }
+  wrap.classList.add("fim");
+}
+
+/* ---------- fogos de artifício ---------- */
+function fogos(dur = 6000) {
+  const cv = $("#fogos"), ctx = cv.getContext("2d"), dpr = devicePixelRatio || 1;
+  cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cores = ["#ff5c8a", "#ffc233", "#4cc3ff", "#8b6bff", "#4ce0a0", "#ff8a4c", "#ffffff"];
+  let ps = [], ultimo = 0;
+  const explodir = (x, y) => {
+    const c = cores[(Math.random() * cores.length) | 0], n = 60 + ((Math.random() * 30) | 0);
+    for (let i = 0; i < n; i++) {
+      const a = (Math.PI * 2 * i) / n + Math.random() * 0.2, v = 1.5 + Math.random() * 3.8;
+      ps.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, vida: 1, c });
+    }
+  };
+  const t0 = performance.now();
+  (function frame(t) {
+    const el = t - t0;
+    ctx.globalCompositeOperation = "destination-out";           // rastro que vai sumindo
+    ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.fillRect(0, 0, innerWidth, innerHeight);
+    ctx.globalCompositeOperation = "source-over";
+    if (el < dur - 1500 && t - ultimo > 420) {
+      ultimo = t; explodir(innerWidth * (0.15 + Math.random() * 0.7), innerHeight * (0.12 + Math.random() * 0.4));
+    }
+    ps = ps.filter((p) => p.vida > 0);
+    for (const p of ps) {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.045; p.vx *= 0.985; p.vy *= 0.985; p.vida -= 0.011;
+      ctx.globalAlpha = Math.max(p.vida, 0); ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 2.2, 0, 7); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (el < dur || ps.length) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, innerWidth, innerHeight);
+  })(t0);
+}
+
+/* ---------- bolo: apagar as velas soprando no microfone (ou com um toque) ---------- */
+async function bolo(id) {
+  const el = $("#bolo");
+  el.classList.add("on");
+  const r = el.getBoundingClientRect();
+  scrollTo({ top: r.bottom + scrollY - innerHeight + 90, behavior: "smooth" });
+  if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(18);   // abaixa a música para o microfone ouvir o sopro
+  await sleep(900);
+
+  let stream, ac, iv;
+  const parar = () => {
+    clearInterval(iv);
+    try { stream && stream.getTracks().forEach((t) => t.stop()); ac && ac.close(); } catch (e) {}
+  };
+  await new Promise((resolve) => {
+    let feito = false;
+    const vigia = setInterval(() => { if (id !== runId) fim(); }, 300); // se reiniciar, cancela
+    const fim = () => { if (feito) return; feito = true; parar(); clearInterval(vigia); resolve(); };
+    $("#btnApagar").onclick = fim;
+    $("#btnSoprar").onclick = async () => {
+      $("#btnSoprar").disabled = true;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: false },
+        });
+        ac = new (window.AudioContext || window.webkitAudioContext)();
+        const an = ac.createAnalyser(); an.fftSize = 512;
+        ac.createMediaStreamSource(stream).connect(an);
+        const d = new Float32Array(an.fftSize);
+        let forca = 0;
+        $("#dicaBolo").textContent = "Pode soprar! 💨";
+        iv = setInterval(() => {
+          an.getFloatTimeDomainData(d);
+          const rms = Math.sqrt(d.reduce((s, v) => s + v * v, 0) / d.length);
+          el.style.setProperty("--s", Math.min(1, rms * 4).toFixed(2));   // chamas inclinam com o sopro
+          forca = rms > 0.12 ? forca + 1 : Math.max(0, forca - 1);
+          if (forca >= 6) fim();                                          // ~0,3s de sopro forte
+        }, 50);
+      } catch (e) {
+        $("#btnSoprar").disabled = false;
+        $("#dicaBolo").textContent = "Não consegui usar o microfone 😅 toque em “Apagar com um toque”";
+      }
+    };
+  });
+  if (id !== runId) return false;
+
+  el.style.setProperty("--s", 0);
+  el.classList.add("apagado");
+  $("#dicaBolo").textContent = "Pedido feito! 🎉✨";
+  if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(70);
+  fogos(); confete();
+  await sleep(4200);
+  return id === runId;
+}
+
+function tirarLapis() {
+  pencil.style.transitionDuration = "900ms";
+  pencil.style.transform = `translate(${scrollX + innerWidth}px,${scrollY + innerHeight + 200}px)`;
+}
+
+/* ---------- brilhinhos que seguem o dedo / mouse ---------- */
+(function brilhinhos() {
+  const simbolos = ["✦", "✧", "♥", "✶"], cores = ["#ff5c8a", "#ffc233", "#8b6bff", "#4cc3ff", "#ff8ab8"];
+  let ultimo = 0;
+  addEventListener("pointermove", (e) => {
+    const t = performance.now();
+    if (t - ultimo < 45) return;
+    ultimo = t;
+    const s = document.createElement("span");
+    s.className = "spark";
+    s.textContent = simbolos[(Math.random() * simbolos.length) | 0];
+    s.style.left = e.clientX + "px"; s.style.top = e.clientY + "px";
+    s.style.color = cores[(Math.random() * cores.length) | 0];
+    s.style.fontSize = 10 + Math.random() * 14 + "px";
+    s.style.setProperty("--dx", Math.random() * 40 - 20 + "px");
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 900);
+  });
+})();
+
+/* ---------- animação principal ---------- */
+async function start() {
+  const id = ++runId;
+  scrollTo(0, 0);
+  $("#qrwrap").classList.remove("on", "fim");
+  $("#bolo").classList.remove("on", "apagado");
+  $("#bolo").style.setProperty("--s", 0);
+  $("#dicaBolo").textContent = "Faça um pedido e sopre as velinhas 🎤";
+  $("#btnSoprar").disabled = false;
+  const chars = build();
+  const p0 = $("#paper").getBoundingClientRect();
+  movePencil(p0.left + scrollX + 90, p0.top + scrollY + 70, 0);
+  await sleep(800);
+
+  for (const s of chars) {
+    if (id !== runId) return;
+    const r = s.getBoundingClientRect(), c = s.textContent;
+    const x0 = r.left + scrollX, x1 = r.right + scrollX, y = r.bottom + scrollY - 9;
+    const dur = (c === " " ? 40 : 85) * VELOCIDADE;
+    movePencil(x0, y, 0);
+    s.style.transition = `clip-path ${dur}ms linear`;
+    requestAnimationFrame(() => {
+      s.style.clipPath = "inset(-50% -50% -50% -50%)";
+      movePencil(x1, y - (Math.random() * 6 - 3), dur);
+    });
+    setTimeout(() => { s.style.clipPath = "none"; }, dur + 60); // letra completa, sem recorte
+    follow(y);
+    await sleep(dur + (/[,.!?…]/.test(c) ? 260 * VELOCIDADE : 0));
+  }
+
+  await sleep(600);
+  tirarLapis();
+  if (!(await bolo(id)) || id !== runId) return;   // bolo + sopro + fogos
+  await desenharQR(id);                            // o lápis volta para desenhar o QR do presente
+  if (id !== runId) return;
+  confete();
+  await sleep(700);
+  tirarLapis();
+}
+
+/* ---------- trilha sonora instrumental (sintetizada, sem internet e sem voz) ---------- */
+const audio = $("#musica"), btnSom = $("#btnSom");
+audio.volume = 0.5;
+
+const Trilha = (() => {
+  const BPM = 100;
+  const midi = (n) => 440 * Math.pow(2, (n - 69) / 12);
+  // progressão pop clássica (C – G – Am – F): 1 compasso por acorde
+  const ACORDES = [[60, 64, 67, 72], [59, 62, 67, 71], [57, 60, 64, 69], [57, 60, 65, 69]];
+  const BAIXOS = [48, 43, 45, 41];
+  const ARPEJO = [0, 1, 2, 3, 2, 1, 2, 1];                 // notas do acorde por colcheia
+  const MELODIA = [[0, 3], [2, 5], [0, 4, 6], [3, 7]];     // onde entra a nota aguda, por compasso
+  let ctx, master, delay, timer, proximo = 0, passo = 0, ligada = false, analisador;
+
+  function iniciarAudio() {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain(); master.gain.value = 0.22;
+    const comp = ctx.createDynamicsCompressor();
+    master.connect(comp); comp.connect(ctx.destination);
+    analisador = ctx.createAnalyser(); analisador.fftSize = 1024; comp.connect(analisador); // só para diagnóstico
+    // eco suave (dá o brilho de "caixinha de música")
+    delay = ctx.createDelay(1); delay.delayTime.value = 60 / BPM * 0.75;
+    const fb = ctx.createGain(); fb.gain.value = 0.32;
+    const wet = ctx.createGain(); wet.gain.value = 0.35;
+    delay.connect(fb); fb.connect(delay); delay.connect(wet); wet.connect(master);
+  }
+
+  function nota(freq, t, dur, { tipo = "sine", vol = 0.3, ataque = 0.01, eco = true, harm = 0 } = {}) {
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + ataque);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    g.connect(master); if (eco) g.connect(delay);
+    const o = ctx.createOscillator(); o.type = tipo; o.frequency.value = freq;
+    o.connect(g); o.start(t); o.stop(t + dur + 0.05);
+    if (harm) { // brilho metálico de caixinha de música
+      const g2 = ctx.createGain(); g2.gain.value = harm; g2.connect(g);
+      const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 3;
+      o2.connect(g2); o2.start(t); o2.stop(t + dur + 0.05);
+    }
+  }
+
+  function agendar() {
+    const colcheia = 60 / BPM / 2;
+    while (proximo < ctx.currentTime + 0.5) {
+      const comp = Math.floor(passo / 8) % 4, p = passo % 8, ac = ACORDES[comp];
+      // arpejo
+      nota(midi(ac[ARPEJO[p]]), proximo, 1.1, { vol: 0.16, harm: 0.25 });
+      // melodia aguda
+      if (MELODIA[comp].includes(p)) {
+        const n = ac[(p + comp) % 4] + 12;
+        nota(midi(n), proximo, 1.6, { vol: 0.2, harm: 0.35 });
+      }
+      // baixo e "pad" no início do compasso
+      if (p === 0 || p === 4) nota(midi(BAIXOS[comp]), proximo, colcheia * 3.6, { tipo: "triangle", vol: 0.38, eco: false });
+      if (p === 0) ac.slice(0, 3).forEach((n) =>
+        nota(midi(n - 12), proximo, colcheia * 8, { tipo: "triangle", vol: 0.07, ataque: 0.25 }));
+      proximo += colcheia; passo++;
+    }
+  }
+
+  return {
+    get ligada() { return ligada; },
+    get estado() { return ctx ? ctx.state : "sem contexto"; },
+    nivel() { // volume atual (0 = silêncio) — diagnóstico
+      if (!analisador) return 0;
+      const d = new Float32Array(analisador.fftSize); analisador.getFloatTimeDomainData(d);
+      return Math.sqrt(d.reduce((s, v) => s + v * v, 0) / d.length);
+    },
+    ligar() {
+      if (!ctx) iniciarAudio();
+      ctx.resume();
+      if (ligada) return;
+      ligada = true; proximo = ctx.currentTime + 0.1;
+      agendar(); timer = setInterval(agendar, 120);
+    },
+    desligar() {
+      if (!ligada) return;
+      ligada = false; clearInterval(timer);
+      master.gain.setTargetAtTime(0, ctx.currentTime, 0.15);
+      setTimeout(() => { ctx.suspend(); master.gain.value = 0.22; }, 600);
+    },
+  };
+})();
+
+/* mp3 próprio (opcional): se existir musica.mp3 na pasta, ele é usado no lugar da trilha */
+let temMp3 = false;
+audio.addEventListener("canplay", () => { temMp3 = true; }, { once: true });
+
+/* Música do YouTube (opcional, vazio por padrão) */
+let ytPlayer = null, ytTimer = null, ytJaTocou = false, ytTentativas = 0;
+function ligarYT() {
+  if (!MUSICA_YOUTUBE) return;
+  // abrindo o arquivo direto (file://) o YouTube recusa o player (erro 153): usa a trilha própria
+  if (location.protocol === "file:") { Trilha.ligar(); return; }
+  if (ytPlayer && ytPlayer.playVideo) { ytPlayer.playVideo(); return; }
+  if (!$("#yt")) {
+    const d = document.createElement("div");
+    d.id = "yt"; // o player precisa ter pelo menos 200x200px, por isso fica quase transparente
+    d.style.cssText = "position:fixed;left:0;bottom:0;width:220px;height:220px;opacity:.003;pointer-events:none;z-index:-1";
+    document.body.appendChild(d);
+  }
+  const criar = () => {
+    ytPlayer = new YT.Player("yt", {
+      width: 220, height: 220, videoId: MUSICA_YOUTUBE,
+      playerVars: { autoplay: 1, loop: 1, playlist: MUSICA_YOUTUBE, controls: 0, playsinline: 1, origin: location.origin },
+      events: {
+        onReady: (e) => { e.target.setVolume(70); e.target.playVideo(); },
+        onError: () => { if (somLigado && !ytJaTocou) Trilha.ligar(); }, // vídeo removido/bloqueado
+        onStateChange: (e) => {
+          if (e.data === 1) { ytJaTocou = true; ytTentativas = 0; Trilha.desligar(); } // tocando: dispensa a reserva
+          // pausou/terminou sozinho enquanto o som deve estar ligado: retoma (no máx. 3 vezes seguidas)
+          else if ((e.data === 2 || e.data === 0) && somLigado && ytTentativas < 3) {
+            ytTentativas++; setTimeout(() => { if (somLigado) e.target.playVideo(); }, 400);
+          }
+        },
+      },
+    });
+  };
+  if (window.YT && YT.Player) criar();
+  else {
+    window.onYouTubeIframeAPIReady = criar;
+    const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api";
+    s.onerror = () => { if (somLigado) Trilha.ligar(); };            // sem internet
+    document.head.appendChild(s);
+  }
+  // Reserva: só entra se o YouTube NUNCA chegar a tocar (autoplay bloqueado, sem internet etc.).
+  // Carregando (buffering) não conta como falha; a checagem é a cada 4s, até 12s.
+  clearTimeout(ytTimer);
+  let checagens = 0;
+  const checar = () => {
+    if (!somLigado || ytJaTocou) return;
+    const st = ytPlayer && ytPlayer.getPlayerState ? ytPlayer.getPlayerState() : -2;
+    if (st === 3 && ++checagens < 3) { ytTimer = setTimeout(checar, 4000); return; } // ainda carregando
+    if (st !== 1) Trilha.ligar();
+  };
+  ytTimer = setTimeout(checar, 8000);
+}
+function desligarYT() {
+  clearTimeout(ytTimer);
+  if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+}
+
+let somLigado = false;
+function ligarSom() {
+  somLigado = true; btnSom.textContent = "🔊";
+  if (MUSICA_YOUTUBE) ligarYT();
+  else if (temMp3) audio.play().catch(() => {});
+  else Trilha.ligar();
+}
+function desligarSom() {
+  somLigado = false; btnSom.textContent = "🔇";
+  desligarYT(); audio.pause(); Trilha.desligar();
+}
+btnSom.hidden = false;
+btnSom.onclick = () => (somLigado ? desligarSom() : ligarSom());
+
+/* ---------- eventos ---------- */
+$("#abrir").onclick = async () => {
+  $("#intro").classList.add("sumiu");
+  $("#paper").classList.add("entrou");
+  ligarSom();
+  await document.fonts.ready;
+  start();
+};
+$("#replay").onclick = start;
+
+</script>
+</body>
+</html>
